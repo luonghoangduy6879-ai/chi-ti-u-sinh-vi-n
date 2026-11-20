@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chi tiêu sinh viên</title>
+<style>
+:root{--bg:#f6f7f4;--card:#fff;--tx:#1f2a24;--mu:#66736b;--bd:#e1e5df;--ac:#1f8a5b;--ac2:#e8f4ee;--wa:#b4531a;--wb:#fdf0e6;--rd:#c0392b;--gr:#1f8a5b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141a17;--card:#1c2420;--tx:#e8eee9;--mu:#92a198;--bd:#2c3731;--ac:#3fbf86;--ac2:#1f3329;--wa:#f0a36b;--wb:#3a2a1d;--rd:#ef7d70;--gr:#3fbf86;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141a17;--card:#1c2420;--tx:#e8eee9;--mu:#92a198;--bd:#2c3731;--ac:#3fbf86;--ac2:#1f3329;--wa:#f0a36b;--wb:#3a2a1d;--rd:#ef7d70;--gr:#3fbf86;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:960px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:4px 0 2px}h2{font-size:16px;margin:0 0 12px}
+.sub{color:var(--mu);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:14px}
+.top{display:flex;flex-wrap:wrap;gap:10px;align-items:end;justify-content:space-between;margin-bottom:14px}
+label{display:block;font-size:12px;color:var(--mu);margin-bottom:3px}
+input,select{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:8px 10px;width:100%;min-width:0}
+button{font:inherit;cursor:pointer;border:0;border-radius:9px;padding:9px 14px;background:var(--ac);color:#fff;font-weight:600}
+button.g{background:transparent;color:var(--mu);border:1px solid var(--bd);font-weight:500}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;align-items:end}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:14px}
+.st{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px}
+.st b{display:block;font-size:22px;margin-top:2px}.st span{color:var(--mu);font-size:13px}
+.up{color:var(--rd)}.dn{color:var(--gr)}
+.bar{height:8px;background:var(--ac2);border-radius:5px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--ac);border-radius:5px}
+.sc{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:520px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--bd);font-size:14px}
+th{color:var(--mu);font-weight:500;font-size:12px}td.n,th.n{text-align:right;white-space:nowrap}
+.tip{background:var(--wb);color:var(--wa);border-radius:10px;padding:9px 12px;margin-bottom:8px;font-size:14px}
+.tip.ok{background:var(--ac2);color:var(--ac)}
+.day{font-weight:600;font-size:13px;color:var(--mu);margin:12px 0 4px;display:flex;justify-content:space-between}
+.row{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--bd);align-items:center}
+.row small{color:var(--mu)}.row button{padding:3px 9px;font-size:12px}
+.tr{display:flex;gap:8px;align-items:flex-end;height:130px}
+.tr div{flex:1;text-align:center;font-size:11px;color:var(--mu);display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+.tr i{display:block;background:var(--ac);border-radius:5px 5px 0 0;min-height:2px}.tr .cur i{background:var(--wa)}
+.two{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:800px){.two{grid-template-columns:1fr 1fr}}
+.empty{color:var(--mu);text-align:center;padding:16px 0}
+</style>
+</head>
+<body>
+<div class="w">
+<h1>💸 Chi tiêu sinh viên</h1>
+<p class="sub">Ghi lại từng khoản chi mỗi ngày, xem tổng kết tháng và so sánh với các tháng trước.</p>
+
+<div class="top">
+ <div><label>Tháng đang xem</label><input type="month" id="mo"></div>
+ <div><label>Ngân sách tháng (đ)</label><input type="number" id="bud" min="0" step="50000"></div>
+ <button class="g" id="demo">Thêm dữ liệu mẫu</button>
+</div>
+
+<div class="card">
+ <h2>Thêm khoản chi</h2>
+ <div class="form">
+  <div><label>Ngày</label><input type="date" id="d"></div>
+  <div><label>Loại chi</label><select id="c"></select></div>
+  <div><label>Số tiền (đ)</label><input type="number" id="a" min="0" step="1000" placeholder="35000"></div>
+  <div><label>Ghi chú</label><input id="n" placeholder="Cơm sườn, trà sữa..."></div>
+  <button id="add">Thêm</button>
+ </div>
+</div>
+
+<div class="stats" id="stats"></div>
+
+<div class="two">
+ <div class="card"><h2>Gợi ý điều chỉnh</h2><div id="tips"></div></div>
+ <div class="card"><h2>Tổng chi 6 tháng gần nhất</h2><div class="tr" id="tr"></div></div>
+</div>
+
+<div class="card"><h2>Chi tiêu theo nhóm (so với tháng trước)</h2><div class="sc"><table id="cat"></table></div></div>
+<div class="card"><h2>Chi tiết theo ngày</h2><div id="list"></div></div>
+</div>
+
+<script>
+var CATS=["🍞 Ăn sáng","🍚 Ăn trưa","🍜 Ăn tối","🧋 Ăn vặt & nước uống","🏠 Tiền trọ","💡 Điện, nước, internet","🚌 Đi lại","📚 Học tập","🎁 Mua quà","🛍️ Shopping","🎮 Giải trí","📦 Khác"];
+var FLEX=[3,8,9,10]; // nhóm dễ cắt giảm: ăn vặt, quà, shopping, giải trí
+var KEY="chitieu-sv-v1";
+var S={items:[],budget:3000000};
+try{var r=localStorage.getItem(KEY);if(r){var p=JSON.parse(r);if(p&&p.items)S=p}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+var $=function(i){return document.getElementById(i)};
+var money=function(n){return Math.round(n).toLocaleString("vi-VN")+"đ"};
+var today=new Date(),pad=function(n){return String(n).padStart(2,"0")};
+var todayStr=today.getFullYear()+"-"+pad(today.getMonth()+1)+"-"+pad(today.getDate());
+$("mo").value=todayStr.slice(0,7);$("d").value=todayStr;$("bud").value=S.budget;
+$("c").innerHTML=CATS.map(function(c,i){return '<option value="'+i+'">'+c+'</option>'}).join("");
+function esc(s){var d=document.createElement("div");d.textContent=s;return d.innerHTML}
+function prevKey(k){var y=+k.slice(0,4),m=+k.slice(5,7)-1;if(m<1){y--;m=12}return y+"-"+pad(m)}
+function monthItems(k){return S.items.filter(function(x){return x.d.slice(0,7)===k})}
+function sum(a){return a.reduce(function(t,x){return t+x.a},0)}
+function byCat(a){var o=CATS.map(function(){return 0});a.forEach(function(x){o[x.c]+=x.a});return o}
+function pct(a,b){return b>0?Math.round((a-b)/b*100):null}
+function delta(a,b){if(b<=0)return '<span class="sc">—</span>';var p=pct(a,b);return '<span class="'+(p>0?"up":"dn")+'">'+(p>0?"▲ +":p<0?"▼ ":"")+p+"%</span>"}
+
+function render(){
+ var k=$("mo").value||todayStr.slice(0,7),pk=prevKey(k);
+ var cur=monthItems(k),prev=monthItems(pk),T=sum(cur),P=sum(prev),cc=byCat(cur),pc=byCat(prev);
+ var y=+k.slice(0,4),m=+k.slice(5,7),dim=new Date(y,m,0).getDate();
+ var isNow=k===todayStr.slice(0,7),elapsed=isNow?today.getDate():dim;
+ var avg=T/elapsed,proj=avg*dim,B=+S.budget||0,left=B-T;
+ var diff=T-P;
+ $("stats").innerHTML=
+  '<div class="st"><span>Tổng chi tháng này</span><b>'+money(T)+'</b><span>'+cur.length+' khoản</span></div>'+
+  '<div class="st"><span>So với tháng trước ('+money(P)+')</span><b class="'+(P&&diff>0?"up":"dn")+'">'+(P?(diff>0?"+":"")+money(diff):"—")+'</b><span>'+(P?(diff>0?"Chi nhiều hơn ":"Chi ít hơn ")+Math.abs(pct(T,P))+"%":"Chưa có dữ liệu tháng trước")+'</span></div>'+
+  '<div class="st"><span>Trung bình mỗi ngày</span><b>'+money(avg)+'</b><span>Dự kiến cả tháng: '+money(proj)+'</span></div>'+
+  '<div class="st"><span>'+(left>=0?"Ngân sách còn lại":"Vượt ngân sách")+'</span><b class="'+(left<0?"up":"")+'">'+(B?money(Math.abs(left)):"—")+'</b><div class="bar"><i style="width:'+(B?Math.min(100,T/B*100):0)+'%;background:'+(left<0?"var(--rd)":"var(--ac)")+'"></i></div></div>';
+
+ // gợi ý
+ var tips=[];
+ if(B&&T>B)tips.push("Bạn đã chi vượt ngân sách "+money(T-B)+". Nên tạm dừng các khoản không cần thiết đến cuối tháng.");
+ else if(B&&isNow&&proj>B)tips.push("Với nhịp chi hiện tại, dự kiến cả tháng khoảng "+money(proj)+", vượt ngân sách "+money(proj-B)+". Mỗi ngày nên chi dưới "+money(Math.max(0,(B-T)/Math.max(1,dim-elapsed)))+" cho những ngày còn lại.");
+ if(T>0){var fx=FLEX.reduce(function(t,i){return t+cc[i]},0);
+  if(fx/T>0.25)tips.push("Nhóm ăn vặt, quà, shopping, giải trí chiếm "+Math.round(fx/T*100)+"% tổng chi (nên dưới khoảng 25%). Đây là nhóm dễ cắt giảm nhất.");
+  var eat=cc[0]+cc[1]+cc[2];if(eat/T>0.5)tips.push("Tiền ăn chính chiếm "+Math.round(eat/T*100)+"% tổng chi. Thử nấu ăn hoặc ăn cơm ở căng tin để tiết kiệm hơn.")}
+ CATS.forEach(function(c,i){if(pc[i]>0&&cc[i]>pc[i]*1.2&&cc[i]-pc[i]>=50000)tips.push(c.slice(3)+" tăng "+pct(cc[i],pc[i])+"% so với tháng trước (+"+money(cc[i]-pc[i])+").")});
+ if(!T)tips=["Chưa có khoản chi nào trong tháng này. Hãy thêm khoản chi đầu tiên ở phía trên."];
+ $("tips").innerHTML=tips.length?tips.map(function(t,i){return '<div class="tip'+(!T?" ok":"")+'">'+esc(t)+'</div>'}).join(""):'<div class="tip ok">Chi tiêu của bạn đang ổn, chưa có nhóm nào tăng bất thường. Cứ giữ nhịp này nhé!</div>';
+
+ // xu hướng 6 tháng
+ var ks=[],kk=k;for(var i=0;i<6;i++){ks.unshift(kk);kk=prevKey(kk)}
+ var vals=ks.map(function(x){return sum(monthItems(x))}),mx=Math.max.apply(null,vals.concat([1]));
+ $("tr").innerHTML=ks.map(function(x,i){return '<div class="'+(x===k?"cur":"")+'"><span>'+(vals[i]?Math.round(vals[i]/1000)+"k":"")+'</span><i style="height:'+(vals[i]/mx*85)+'%"></i><span>T'+(+x.slice(5,7))+"</span></div>"}).join("");
+
+ // bảng nhóm
+ var rows=CATS.map(function(c,i){return {c:c,i:i}}).sort(function(a,b){return cc[b.i]-cc[a.i]});
+ $("cat").innerHTML='<tr><th>Nhóm</th><th class="n">Tháng này</th><th style="width:25%">Tỷ trọng</th><th class="n">Tháng trước</th><th class="n">Thay đổi</th></tr>'+
+  rows.filter(function(r){return cc[r.i]||pc[r.i]}).map(function(r){var v=cc[r.i],p=T?v/T*100:0;
+   return "<tr><td>"+r.c+'</td><td class="n">'+money(v)+'</td><td><div class="bar"><i style="width:'+p+'%"></i></div><small>'+Math.round(p)+'%</small></td><td class="n">'+money(pc[r.i])+'</td><td class="n">'+delta(v,pc[r.i])+"</td></tr>"}).join("")||'<tr><td colspan="5" class="empty">Chưa có dữ liệu</td></tr>';
+
+ // danh sách theo ngày
+ var days={};cur.forEach(function(x){(days[x.d]=days[x.d]||[]).push(x)});
+ var dk=Object.keys(days).sort().reverse();
+ $("list").innerHTML=dk.length?dk.map(function(d){var a=days[d];
+  return '<div class="day"><span>'+d.slice(8)+"/"+d.slice(5,7)+'</span><span>'+money(sum(a))+"</span></div>"+
+  a.map(function(x){return '<div class="row"><div>'+CATS[x.c]+(x.n?" <small>· "+esc(x.n)+"</small>":"")+'</div><div>'+money(x.a)+' <button class="g" data-id="'+x.id+'">Xóa</button></div></div>'}).join("")}).join(""):'<div class="empty">Chưa có khoản chi nào trong tháng này.</div>';
+}
+
+$("add").onclick=function(){
+ var a=+$("a").value,d=$("d").value;
+ if(!(a>0)||!d){alert("Hãy nhập ngày và số tiền hợp lệ.");return}
+ S.items.push({id:Date.now()+Math.random().toString(36).slice(2,6),d:d,c:+$("c").value,a:a,n:$("n").value.trim()});
+ save();$("a").value="";$("n").value="";$("mo").value=d.slice(0,7);render();
+};
+$("list").onclick=function(e){var id=e.target.getAttribute("data-id");if(id){S.items=S.items.filter(function(x){return x.id!==id});save();render()}};
+$("mo").onchange=render;
+$("bud").onchange=function(){S.budget=+$("bud").value||0;save();render()};
+$("demo").onclick=function(){
+ if(S.items.length&&!confirm("Thêm dữ liệu mẫu vào dữ liệu hiện có?"))return;
+ var ks=[prevKey(todayStr.slice(0,7)),todayStr.slice(0,7)];
+ ks.forEach(function(k,ki){var last=ki?Math.min(today.getDate(),28):28;
+  for(var d=1;d<=last;d++){var ds=k+"-"+pad(d);
+   var add=function(c,a,n){S.items.push({id:ds+c+Math.random().toString(36).slice(2,6),d:ds,c:c,a:a,n:n||""})};
+   add(0,15000+(d%3)*5000);add(1,35000+(d%4)*5000);add(2,35000+(d%5)*5000);
+   if(d%2==0)add(3,ki?40000+(d%3)*10000:25000+(d%3)*10000,"Trà sữa");
+   if(d%9==0)add(6,50000,"Xăng xe");if(d==10)add(9,ki?450000:200000,"Mua áo")}
+  S.items.push({id:k+"tro",d:k+"-01",c:4,a:1200000,n:"Tiền trọ"});
+  S.items.push({id:k+"dien",d:k+"-05",c:5,a:250000,n:"Điện nước, wifi"})});
+ save();render();
+};
+render();
+</script>
+</body>
+</html>
